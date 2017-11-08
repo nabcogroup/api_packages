@@ -1,0 +1,37 @@
+{
+    "name": "kielpack/laralibs",
+    "type": "library",
+    "require": {
+        "php": "^7.1"
+    },
+    "license": "ME",
+    "authors": [
+        {
+            "name": "Arnold Mercado",
+            "email": "arnold.mercado@hotmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "classmap": [
+            "database"
+        ],
+        "psr-4": {
+            "KielPack\\LaraLibs\\": "packages/kielpack/laralibs/src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "KielPack\\Laralibs\\Providers\\LaraLibProvider"
+            ],
+            "aliases":{
+                "Bundle": "KielPack\\Laralibs\\Supports\\Facades\\Bundle",
+                "EventListenerRegister": "KielPack\\Laralibs\\Supports\\Facades\\EventListenerRegister",
+                "FileManager": "KielPack\\Laralibs\\Supports\\Facades\\FileManager",
+                "Result": "KielPack\\Laralibs\\Supports\\Facades\\Result"
+            }
+        }
+
+    }
+}
