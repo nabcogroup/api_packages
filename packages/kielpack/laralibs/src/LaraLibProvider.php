@@ -1,6 +1,6 @@
 <?php
 
-namespace KielPack\LaraLibs\Providers;
+namespace KielPack\LaraLibs;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -13,7 +13,9 @@ class LaraLibProvider extends ServiceProvider
      */
     public function boot()
     {
-
+        $this->publishes([
+            __DIR__ . "/Selections/migrations" => base_path("database/migrations")
+        ]);
     }
 
     /**
@@ -23,6 +25,8 @@ class LaraLibProvider extends ServiceProvider
      */
     public function register()
     {
+
+
         $this->app->bind('bundle','KielPack\LaraLibs\Supports\Bundle');
         $this->app->bind('result','KielPack\LaraLibs\Supports\Result');
         $this->app->bind('fileManager','KielPack\LaraLibs\Supports\FileManager');

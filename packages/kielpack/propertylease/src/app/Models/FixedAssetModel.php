@@ -21,8 +21,12 @@ class FixedAssetModel extends BaseModel
         "full_fixed_asset_type",
         "full_property",
         "full_purchase_date",
-
     ];
+
+    public static function createInstance() {
+
+        return new FixedAssetModel();
+    }
 
 
     public function __construct(array $attributes = [])

@@ -23,7 +23,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "KielPack\\Laralibs\\Providers\\LaraLibProvider"
+                "KielPack\\Laralibs\\LaraLibProvider"
             ],
             "aliases":{
                 "Bundle": "KielPack\\Laralibs\\Supports\\Facades\\Bundle",

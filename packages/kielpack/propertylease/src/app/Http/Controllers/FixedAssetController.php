@@ -7,9 +7,12 @@ namespace KielPack\PropertyLease\App\Http\Controllers;
 use Illuminate\Http\Request;
 
 
+use KielPack\LaraLibs\Selections\SelectionModel as Selection;
 use KielPack\LaraLibs\Supports\Result;
 use KielPack\LaraLibs\Traits\PaginationTrait;
+use KielPack\PropertyLease\App\Models\FixedAssetModel;
 use KielPack\PropertyLease\App\Repositories\FixedAssetRepository;
+
 
 
 class FixedAssetController extends Controller
@@ -38,8 +41,26 @@ class FixedAssetController extends Controller
         $this->repo->saveFixedAsset($request);
 
         Result::ok('Successfully Save');
+
     }
 
+
+    public function create() {
+
+        $instance = FixedAssetModel::createInstance();
+        $lookups = Selection::getSelections(['villa_location','fixed_asset_type']);
+
+        return response()->json(['instance' => $instance,'lookups' => $lookups]);
+
+    }
+
+    public function show() {
+
+    }
+
+    public function remove() {
+
+    }
 
     protected function validateRequest(Request $request) {
 

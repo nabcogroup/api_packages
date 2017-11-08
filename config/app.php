@@ -177,7 +177,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        KielPack\LaraLibs\Providers\LaraLibProvider::class,
+        KielPack\LaraLibs\LaraLibProvider::class,
         KielPack\PropertyLease\PropertyLeaseProvider::class
 
     ],
