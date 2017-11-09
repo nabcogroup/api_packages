@@ -1,0 +1,14 @@
+{
+    "name": "sunriseco/properties",
+    "description": "Properties Domain",
+    "type": "project",
+    "license": "ME",
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Sunriseco\\Properties\\": "packages/sunriseco/properties/src/"
+        }
+    },
+
+}

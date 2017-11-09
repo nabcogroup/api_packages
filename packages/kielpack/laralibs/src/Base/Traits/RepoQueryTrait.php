@@ -1,6 +1,6 @@
 <?php
 
-namespace KielPack\LaraLibs\Traits;
+namespace KielPack\LaraLibs\Base\Traits;
 
 
 trait RepoQueryTrait
@@ -32,6 +32,12 @@ trait RepoQueryTrait
     public function explicitQuery($field,$value,$opt='=') {
         $this->model = $this->model->where($field,$opt,$value);
         return $this;
+    }
+
+    public function includes($childrens) {
+        $this->model  = $this->model->with($childrens);
+        return $this;
+
     }
 
 }

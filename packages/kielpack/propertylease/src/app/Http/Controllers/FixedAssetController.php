@@ -54,7 +54,12 @@ class FixedAssetController extends Controller
 
     }
 
-    public function show() {
+    public function show($id) {
+
+        $fixedAsset = $this->repo->includes('depreciations')->find($id);
+        $lookups = Selection::getSelections(['villa_location','fixed_asset_type']);
+
+        return  Result::response(['instance' => $fixedAsset,'lookups' => $lookups]);
 
     }
 

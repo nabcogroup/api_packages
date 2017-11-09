@@ -23,6 +23,11 @@ class Result
         ];
     }
 
+    public static function response($data = array()) {
+
+        return response()->json($data,200);
+    }
+
     public static function badRequest($errors = array()) {
 
         return new JsonResponse($errors,500);

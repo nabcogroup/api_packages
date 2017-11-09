@@ -8,7 +8,10 @@
 | Fixed Asset Web Routes
 |--------------------------------------------------------------------------
 */
-PropertyLeaseRoute::route();
+PropertyLeaseRoute::fixedAssetRoute();
+
+
+
 
 
 Route::get('/', function () {

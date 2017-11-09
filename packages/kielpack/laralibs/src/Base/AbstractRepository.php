@@ -8,7 +8,9 @@
 
 namespace KielPack\LaraLibs\Base;
 
-use KielPack\LaraLibs\Traits\RepoQueryTrait;
+
+
+use KielPack\LaraLibs\Base\Traits\RepoQueryTrait;
 use Mockery\Exception;
 
 abstract class AbstractRepository

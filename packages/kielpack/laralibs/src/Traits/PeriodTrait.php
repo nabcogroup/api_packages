@@ -19,8 +19,10 @@ trait PeriodTrait
     }
 
     public function getRemainingPeriod() {
+
         $endPeriod = Carbon::parse($this->period_end);
         $remaining = $endPeriod->diffInDays(Carbon::now());
+        
         return $remaining;
 
     }

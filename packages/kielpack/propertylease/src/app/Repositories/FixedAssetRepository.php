@@ -72,7 +72,6 @@ class FixedAssetRepository extends AbstractRepository
         try {
 
             $model = $this->attach($request->all())->instance();
-            
             $attributes = [
                 'ob_amount'                 =>  $this->model->total_cost_for_dep,
                 'ob_year'                   =>  Carbon::parse($this->model->purchase_date)->year,

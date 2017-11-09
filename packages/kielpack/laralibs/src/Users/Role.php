@@ -15,7 +15,6 @@ class Role extends BaseModel
 {
     protected $table = "roles";
 
-
     public function users() {
 
         return $this->belongsToMany(User::class,'user_roles','role_id','user_id');

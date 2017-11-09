@@ -9,8 +9,7 @@
             "database"
         ],
         "psr-4": {
-            "KielPack\\PropertyLease\\": "packages/kielpack/propertylease/src",
-            "KielPack\\LaraLibs\\": "packages/kielpack/laralibs/src/"
+            "KielPack\\PropertyLease\\": "packages/kielpack/propertylease/src"
         }
     },
     "extra": {

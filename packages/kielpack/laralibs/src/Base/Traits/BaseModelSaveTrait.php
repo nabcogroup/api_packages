@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: arnold.mercado
- * Date: 11/7/2017
- * Time: 12:03 PM
- */
 
 namespace KielPack\LaraLibs\Base\Traits;
 

@@ -4,21 +4,19 @@
 namespace KielPack\LaraLibs\Base;
 
 use Illuminate\Database\Eloquent\Model;
+use KielPack\LaraLibs\Base\Traits\StatusTrait;
 use KielPack\LaraLibs\Base\Traits\BaseModelSaveTrait;
 
 
 class BaseModel extends Model {
 
-    use BaseModelSaveTrait;
+    use BaseModelSaveTrait, StatusTrait;
 
     protected $guarded = ['id','created_at','updated_at','deleted_at'];
 
     protected function beforeSave() {return false;}
     protected function afterSave() {return false;}
-
-    public function hasStatusOf($status) {
-        return $this->status == $status;
-    }
+   
 
     public function toMap($fields = array()) {
         if(sizeof($fields) > 0) {
@@ -48,7 +46,7 @@ class BaseModel extends Model {
             $params['filter_field'] = $filter_field;
             $params['filter_value'] = $filter_value;
 
-            if(!is_null($callback)) {
+            if(is_callable($callback)) {
                 $filters = $callback($this,$filter_field,$filter_value);
             }
             else {
