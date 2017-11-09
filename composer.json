@@ -24,7 +24,7 @@
         "psr-4": {
             "App\\": "app/",
             "KielPack\\LaraLibs\\": "packages/kielpack/laralibs/src",
-            "KielPack\\PropertyLease\\" : "packages/kielpack/propertylease/src"
+            "Sunriseco\\Properties\\": "packages/sunriseco/properties/src"
         }
     },
     "autoload-dev": {

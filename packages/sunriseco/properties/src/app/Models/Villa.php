@@ -6,6 +6,7 @@ namespace Sunriseco\Properties\App\Models;
 use KielPack\LaraLibs\Base\BaseModel;
 use KielPack\LaraLibs\Selections\SelectionModel as Selection;
 
+
 class Villa extends BaseModel
 {
     
@@ -13,17 +14,19 @@ class Villa extends BaseModel
 
     protected $fillable = ["villa_no","location","electricity_no","water_no","qtel_no","villa_class","capacity","description","rate_per_month","status"];
 
-    protected $appends = ['full_rate_per_month','full_location','full_villa_class','full_status','status_count'];
+    protected $appends = ['full_rate_per_month','full_villa_class','full_status'];
 
     public static function createInstance() {
         $villa =  new Villa();
+        $villa->lookups = Selection::getSelections(['villa_type']);
         return $villa;
     }
 
     public function __construct(array $attributes = []) {
 
         if(empty($attributes)) {
-            $attributes['rate_per_mon'] = 0;
+            $attributes['rate_per_month'] = 0;
+
         }
         parent::__construct($attributes);
     }
@@ -35,13 +38,10 @@ class Villa extends BaseModel
         return number_format($this->rate_per_month,2)." ".config("app.CURRENCY_FORMAT");
     }
 
-    protected function getFullLocationAttribute() {
-        return Selection::getValue('villa_location',$this->location);
-    }
+
 
     public function getFullVillaClassAttribute() {
         return Selection::convertCode($this->villa_class);
-
     }
 
     public function getFullStatusAttribute() {

@@ -1,16 +1,17 @@
 <?php
 
 
+use Sunriseco\Properties\App\Routes\PropertyRoutes;
 
+
+
+PropertyRoutes::routes();
 
 /*
 |--------------------------------------------------------------------------
 | Fixed Asset Web Routes
 |--------------------------------------------------------------------------
 */
-PropertyLeaseRoute::fixedAssetRoute();
-
-
 
 
 
