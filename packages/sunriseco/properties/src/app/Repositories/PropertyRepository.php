@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace Sunriseco\Properties\App\Repositories;
 
 
 use Carbon\Carbon;
@@ -24,22 +24,25 @@ class PropertyRepository extends AbstractRepository
         return new Property();
     }
 
-
-
     public function getProperties() {
         $params = [];
-        $activeRecords = $this->model->customFilter($params)->select('code', 'name','address');
+
+        $activeRecords = $this->model->customFilter($params);
+
         return $this->createPagination($activeRecords,null,$params);
     }
 
     public function getAvailableProperties() {
+
         $activeRecords = $this->model->with(['villas' => function($query) {
                 $query->where('status','vacant');
         }]);
+
         return $activeRecords->get();
     }
 
     public function saveProperty($request) {
+
         if(isset($request['villas'])) {
             $children = $request['villas'];
             unset($request['villas']);
@@ -47,31 +50,20 @@ class PropertyRepository extends AbstractRepository
         else {
             $children = [];
         }
+
         $this->attach($request,$children);
     }
 
-
-    public function updateVilla($request)
-    {
-        try {
-            $villa = $this->find($request['id']);
-            if($villa) {
-                $villa->toMap($entity)->save();
-            }
-        }
-        catch (Exception $e) {
-            return Result::badRequest(["message" => $e->getMessage()]);
-        }
-
-        return true;
-    }
 
 
     //override
     protected function afterCreate(&$model, $children = array())
     {
         if(!empty($children)) {
-            $model->villas()->create($children);
+            foreach ($children as $child) {
+                $model->villas()->create($child);
+            }
+
         }
     }
 }

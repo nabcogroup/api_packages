@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace Sunriseco\Properties\App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class VillaForm extends FormRequest
+class PropertyForm extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,31 +24,41 @@ class VillaForm extends FormRequest
     public function rules()
     {
         $validate = [
-            'villa_no'          =>  'required',
-
-            'rate_per_month'    =>  array('required','regex:/^\d+?|^\d+\.\d{2}?/'),
-
-            'description'       =>  'required',
-
-            'electricity_no'    =>  'required',
-
-            'water_no'          =>  'required',
-
-            'qtel_no'           =>  'required',
-
-            'capacity'          =>  'required|numeric',
-
-            'villa_class'       =>  'required',
-
-            'location'          =>  'required'
+            'code'  => 'required',
+            'name'  =>  'required'
         ];
-
-        if($this->id == 0)
-            $validate['villa_no'] =  'required|unique:villas';
 
         return $validate;
     }
 
+    protected function getValidatorInstance()
+    {
+        $validator = parent::getValidatorInstance();
+        $validator->after(function() use ($validator) {
+            $villas = $this->input('villas',null);
+            if(is_array($villas) && sizeof($villas) > 0) {
+                //validate entry
+                foreach ($villas as $villa) {
+
+                    if(!isset($villa['villa_no']) || is_null($villa['villa_no'])) {
+                        $validator->errors()->add('villa_no','Villa No. is required');
+                    }
+
+                    if(is_null($villa['rate_per_month'])) {
+                        $validator->errors()->add('rate_per_month','Rate/month is required');
+                    }
+                    else {
+                        if(!is_numeric($villa['rate_per_month'])) {
+                            $validator->errors()->add('rate_per_month','Rate/month should be numeric value');
+                        }
+                    }
+
+                }
+            }
+
+        });
+        return $validator;
+    }
 
 
 }
