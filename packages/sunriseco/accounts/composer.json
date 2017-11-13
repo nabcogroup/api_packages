@@ -1,0 +1,12 @@
+{
+    "name": "sunriseco/accounts",
+    "type": "library",
+    "license": "ME",
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Sunriseco\\Accounts\\": "packages/sunriseco/accounts/src/"
+        }
+    }
+}

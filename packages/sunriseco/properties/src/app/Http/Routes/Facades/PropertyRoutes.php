@@ -6,7 +6,7 @@
  * Time: 5:29 PM
  */
 
-namespace Sunriseco\Properties\App\Routes\Facades;
+namespace Sunriseco\Properties\App\Http\Routes\Facades;
 
 
 use Illuminate\Support\Facades\Facade;
