@@ -4,8 +4,10 @@
     modal-id="fixedAssetDialog" 
     v-model="errors" 
     @submit="onSubmit" 
-    class="form-horizontal" 
-    @onShow="onShow">
+    @onShow="onShow"
+    class="form-horizontal"
+    :loading-animation="isLoadingSave"
+    >
       
     <v-control-wrapper label="Purchase Date">
       <v-input-control v-model="data.purchase_date" name="purchase_date"></v-input-control>
@@ -51,10 +53,16 @@
 
 <script>
 import { mapGetters, mapState } from "vuex";
-import {EventBus} from "my-vue-tools/src/events/eventbus";
+import { EventBus } from "my-vue-tools/src/events/eventbus";
 
 export default {
+  data() {
+      return {
+        isLoadingSave: false
+      }
+  },
   computed: {
+    
     ...mapState("fixedassets", {
       data: state => state.data
     }),
@@ -65,10 +73,18 @@ export default {
   },
   methods: {
     onSubmit() {
-      EventBus.$emit("fixedAssetDialog.close");
+      this.isLoadingSave = true;
+      this.$store.dispatch("fixedassets/save", result => {
+        this.isLoadingSave = false;
+        if (result == true) {
+          EventBus.$emit("fixedAssetDialog.close");
+          EventBus.$emit("onLiveViewFetch");
+        }
+      });
+      
     },
     onShow() {
-      this.$store.dispatch('fixedassets/createNew');
+      this.$store.dispatch("fixedassets/createNew");
     }
   }
 };

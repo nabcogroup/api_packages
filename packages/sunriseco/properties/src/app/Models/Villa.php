@@ -26,10 +26,23 @@ class Villa extends BaseModel
 
         if(empty($attributes)) {
             $attributes['rate_per_month'] = 0;
-
         }
         parent::__construct($attributes);
     }
+
+
+
+    // public function getTenant() {
+        
+    //     //communicate to contract using domain event
+    //     // Event::raise(new onPullRequest($bundle,new EventRegisterListener(['getTenant'])))
+    //     //use memoizationfor faster response
+    //     if(!Memcache::exist('dsTenants')) {
+    //         MemCache::push('dsTenant',Event::raise(new onPullRequest($bundle,new EventRegisterListener(['getTenant']))));        
+    //     }
+
+    //     return MemCache::pull('dsTenants');
+    // }
 
 
 
