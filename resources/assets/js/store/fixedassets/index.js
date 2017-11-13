@@ -4,7 +4,8 @@ const state = {
     data: {},
     lookups: {
         
-    }
+    },
+    errors: new ErrorValidations()
 }
 
 const mutations = {
@@ -20,7 +21,19 @@ const actions = {
         axios.get('/api/fixed-asset/create')
             .then((response) => commit('createNew',response.data))
             .catch((errors) => {
-                
+              
+            });
+    },
+    save({state,commit},callback) {
+        axios.post('api/fixed-asset/store',state.data)
+            .then(response => {
+                callback(true);
+            })
+            .catch(errors => {
+                if(errors.response.status === 422) {
+                    state.errors.register(errors.response.data.errors)
+                }
+                callback(false);
             });
     }
 }
@@ -32,7 +45,7 @@ const getters = {
         return state.lookups
     },
     errors(state) {
-        return new ErrorValidations();
+        return state.errors;
     }
 }
 
