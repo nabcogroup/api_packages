@@ -9,6 +9,6 @@
         "psr-4": {
             "Sunriseco\\Properties\\": "packages/sunriseco/properties/src/"
         }
-    },
+    }
 
 }

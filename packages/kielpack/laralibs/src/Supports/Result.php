@@ -24,7 +24,7 @@ class Result
     }
 
     public static function response($data = array()) {
-
+        //turn to camelCase
         return response()->json($data,200);
     }
 

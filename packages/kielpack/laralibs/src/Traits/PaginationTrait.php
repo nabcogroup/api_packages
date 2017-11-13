@@ -34,7 +34,7 @@ trait PaginationTrait
         $data = $model->paginate(20);
         $items = [];
         foreach ($data as $key => $row) {
-            if(is_callable($callback)) {
+            if(!is_callable($callback)) {
                 $item = $row;
             }
             else {

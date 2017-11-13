@@ -178,7 +178,8 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         KielPack\LaraLibs\LaraLibProvider::class,
-        KielPack\PropertyLease\PropertyLeaseProvider::class
+        Sunriseco\Properties\PropertyProvider::class,
+        Sunriseco\Accounts\AccountsModuleProvider::class
 
     ],
 
@@ -233,7 +234,6 @@ return [
         "EventListenerRegister" => KielPack\LaraLibs\Supports\Facades\EventListenerRegister::class,
         "FileManager" => KielPack\LaraLibs\Supports\Facades\FileManager::class,
         "Result" => KielPack\LaraLibs\Supports\Facades\Result::class,
-        "PropertyLeaseRoute" => KielPack\PropertyLease\App\Http\Routes\Facade\PropertyLeaseRoute::class,
 
     ],
 

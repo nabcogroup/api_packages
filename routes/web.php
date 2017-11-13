@@ -2,18 +2,23 @@
 
 
 
+/*
+|--------------------------------------------------------------------------
+| Property Routes
+|--------------------------------------------------------------------------
+*/
+PropertyRoutes::routes();
 
 /*
 |--------------------------------------------------------------------------
-| Fixed Asset Web Routes
+| Accounts Route
 |--------------------------------------------------------------------------
 */
-PropertyLeaseRoute::fixedAssetRoute();
-
+AccountsRoutes::routes();
 
 
 
 
 Route::get('/', function () {
-    return csrf_token();
+    return view('app');
 });
