@@ -25,6 +25,7 @@ class PropertyController extends Controller
     public function all() {
         try {
             $properties =  $this->repo->getProperties();
+            
             return Result::response(['properties' => $properties]);
         }
         catch(Exception $e) {
@@ -33,6 +34,8 @@ class PropertyController extends Controller
     }
 
     public function create() {
+
+        //create 
        return Result::response(['data' => csrf_token()]);
     }
 

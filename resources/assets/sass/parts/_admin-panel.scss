@@ -1,0 +1,165 @@
+@mixin transition() {
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+  }
+    
+  $side-width: 250px;
+  $side-width-small: 0;
+  $background: #2A3F54;
+    
+  #admin-panel {
+    padding-left: $side-width;
+    @include transition();
+    &.nav-close {
+        padding-left: $side-width-small;
+        @include transition();
+        .nb-sidebar {
+            left: -$side-width;
+        }
+    }
+  }
+    
+    
+    .nb-sidebar {
+      z-index: 1000;
+      position: fixed;
+      left: 0;
+      top: 0px;
+      width: $side-width;
+      height: 100%;
+      padding:0 !important;
+      overflow-y: auto;
+      background: $background;
+    
+      @include transition();
+    
+      &-brand {
+        background: $background;
+        height: 120px;
+        position: relative;
+        > .wrapper {
+          position: absolute;
+          top: 5px;
+          left: 5px;
+          a {
+            font-size: 1.2em;
+            padding: 5px;
+            color: #999;
+            text-decoration: none;
+            line-height: 1.5em;
+            img.circle {
+              width: 50px;
+              border-radius: 200px;
+    
+            }
+          }
+        }
+      }
+    
+      &-nav {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        > li {
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        > li:last-of-type {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        li {
+          line-height: 40px;
+    
+          a {
+            display: block;
+            text-decoration: none;
+            color: #f5f5f5;
+            background: #2A3F54;
+            padding: 0 10px;
+    
+            &:hover {
+              color: #fff;
+              background: rgba(255, 255, 255, 0.2);
+            }
+          }
+          &.active {
+            > a {
+              background: -webkit-linear-gradient(#334556, #2C4257), #2A3F54;
+              background: -moz-linear-gradient(#334556, #2C4257), #2A3F54;
+              background: -o-linear-gradient(#334556, #2C4257), #2A3F54;
+              background: linear-gradient(#334556, #2C4257), #2A3F54;
+              box-shadow: rgba(0, 0, 0, .25) 0 1px 0, inset rgba(255, 255, 255, .16) 0 1px 0;
+              border-top: 0;
+              border-bottom: 1px solid #111;
+              border-right: 5px solid #1ABB9C;
+              outline: 0;
+    
+            }
+          }
+    
+          .nb-dropdown-menu {
+            position: relative;
+            height: auto;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            > li {
+              > a {
+                padding: 0 0 0 40px;
+                border-right: 5px solid #1ABB9C;
+                &:hover {
+                  color: #fff;
+                  background: rgba(255, 255, 255, 0.2);
+                }
+              }
+    
+              &.sub-menu {
+                &:after {
+                  border-left: 1px solid #425668;
+                  bottom: 0;
+                  left: 8px;
+                  position: absolute;
+                  top: 0;
+                  z-index: 1;
+                  content: "";
+                }
+    
+                &:before {
+                  background: #425668;
+                  content: "";
+                  height: 8px;
+                  width: 8px;
+                  left: 5px;
+                  bottom: auto;
+                  right: auto;
+    
+                  margin-top: 15px;
+                  position: absolute;
+                  z-index: 1;
+                  border-radius: 50%;
+                }
+              }
+    
+              &.separator {
+                display:block;
+                border: 1px solid #425668;
+                width: 100%;
+              }
+    
+              .nav-disabled {
+                display: block;
+                text-decoration: none;
+                color: rgba(255, 255, 255, 0.2);
+                background: #2A3F54;
+                padding: 0 0 0 40px;
+                border-right: 5px solid #1ABB9C;
+              }
+            }
+          }
+    
+        }
+    
+      }
+    }

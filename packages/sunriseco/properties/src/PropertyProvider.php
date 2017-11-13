@@ -10,8 +10,9 @@ namespace Sunriseco\Properties;
 
 
 
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
 use Sunriseco\Properties\App\Routes\PropertyRoutes;
 
 class PropertyProvider extends ServiceProvider
@@ -32,7 +33,9 @@ class PropertyProvider extends ServiceProvider
 
     public function register(){
 
-        $this->app->bind('propertyRoutes',"Sunriseco\Poperties\App\Routes\PropertyRoutes");
+        $this->app->bind('propertyRoutes',"Sunriseco\Properties\App\Http\Routes\PropertyRoutes");
+        $loader = AliasLoader::getInstance();
+        $loader->alias('PropertyRoutes',"Sunriseco\Properties\App\Http\Routes\Facades\PropertyRoutes");
 
     }
 }

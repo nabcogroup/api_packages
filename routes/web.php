@@ -1,20 +1,24 @@
 <?php
 
 
-use Sunriseco\Properties\App\Routes\PropertyRoutes;
 
-
-
+/*
+|--------------------------------------------------------------------------
+| Property Routes
+|--------------------------------------------------------------------------
+*/
 PropertyRoutes::routes();
 
 /*
 |--------------------------------------------------------------------------
-| Fixed Asset Web Routes
+| Accounts Route
 |--------------------------------------------------------------------------
 */
+AccountsRoutes::routes();
+
 
 
 
 Route::get('/', function () {
-    return csrf_token();
+    return view('app');
 });
