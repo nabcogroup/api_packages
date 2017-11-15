@@ -10,17 +10,23 @@
     >
       
     <v-control-wrapper label="Purchase Date">
-      <v-input-control v-model="data.purchase_date" name="purchase_date"></v-input-control>
+      <v-date-picker v-model="data.purchase_date"></v-date-picker>
       <v-error-span v-model="errors" name="purchase_date"></v-error-span>
     </v-control-wrapper>
 
     <v-control-wrapper label="Description">
-      <v-input-control v-model="data.description" name="purchase_date" vtype="multiline"></v-input-control>
+      <v-input-control v-model="data.description" name="description" vtype="multiline"></v-input-control>
       <v-error-span v-model="errors" name="description"></v-error-span>
     </v-control-wrapper>
 
     <v-control-wrapper label="Fixed Asset Type">
-      <v-combo-box :options="lookups.fixed_asset_type" v-model="data.fixed_asset_type" dvalue="code" dtext="name" :include-default="true" name="property_code"></v-combo-box>
+      <v-combo-box 
+        :options="lookups.fixed_asset_type" 
+        v-model="data.fixed_asset_type" 
+        dvalue="code" 
+        dtext="name" 
+        :include-default="true" 
+        name="fixed_asset_type"></v-combo-box>
       <v-error-span v-model="errors" name="fixed_asset_type"></v-error-span>
     </v-control-wrapper>
 

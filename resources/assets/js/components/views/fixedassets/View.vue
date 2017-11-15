@@ -13,16 +13,36 @@
 </template>
 
 <script>
+
+import { mapState, mapGetters } from "vuex";
+
 export default {
-  data() {
-      return {
-          data: {
-              purchase_date: '',
-              property: '',
-              description: ''
-          }
-      }
-  }
-}
+	props: {
+    item: Object
+  },
+  computed: {
+    ...mapState("fixedassets", {
+      data: state => state.data
+    })
+  },
+  methods: {
+		init() {
+			const id = this.$route.params.id;
+			
+			this.$store.dispatch('fixedassets/show',{
+			 	id: id,
+				callback: (result) => {
+					
+				}
+			});
+		}
+	},
+	mounted() {
+		this.init();
+	},
+	watch: {
+		'$route':'init'
+	}
+};
 </script>
 

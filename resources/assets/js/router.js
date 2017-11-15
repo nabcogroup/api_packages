@@ -24,7 +24,7 @@ const router = new VueRouter(
                 component: require('./components/views/fixedassets/List')
             },
             {
-                name: 'fixed-asset',
+                name: 'fixed-asset.view',
                 path: '/fixed-asset/view/:id',
                 component: require('./components/views/fixedassets/View')
             },
