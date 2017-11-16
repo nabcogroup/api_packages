@@ -38,7 +38,9 @@ abstract class AbstractRepository
 
     //deprecated
     public function attach($model,$children = array(),$includeUser=false) {
+
         $childrenModel = [];
+
         if($this->isEditMode($model)) {
             $state = "modify";
         }
@@ -54,6 +56,7 @@ abstract class AbstractRepository
                 $this->beforeCreate($model,$this->model);
                 
                 $this->model->toMap($model);
+
                 if($includeUser)
                     $this->model->saveWithUser();
                 else

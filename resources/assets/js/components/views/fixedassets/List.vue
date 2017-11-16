@@ -1,14 +1,14 @@
 <template>
 <div class="row">
     <v-page-header-bar title="Fixed Asset List" @click="onButtonClick"></v-page-header-bar>
-    <v-live-view :grid="gridView"></v-live-view>
+    <v-live-view :grid="gridView" @action="onAction"></v-live-view>
     <fixed-asset-dialog></fixed-asset-dialog>
 </div>
 </template>
 
 <script>
 
-import { EventBus } from "my-vue-tools/src/events/eventbus";
+import { EventBus } from "my-vue2-package";
 import FixedAssetDialog from "./FixedAssetDialog";
 
 export default {
@@ -41,6 +41,13 @@ export default {
       if (value == "add") {
         EventBus.$emit("fixedAssetDialog.show");
       }
+    },
+    onAction(a,o,i) {
+      
+      //route to show if action == view
+      if(a.key === 'view')
+        this.$router.push(`fixed-asset/view/${o.id}`);
+
     }
   }
 };

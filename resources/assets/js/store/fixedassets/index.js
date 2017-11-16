@@ -1,7 +1,9 @@
-import {ErrorValidations} from "my-vue-tools/src/supports/errorValidation";
+import {ErrorValidations} from "my-vue2-package";
 
 const state = {
-    data: {},
+    data: {
+        depreciations:[]
+    },
     lookups: {
         
     },

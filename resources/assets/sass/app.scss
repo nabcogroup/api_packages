@@ -3,12 +3,5 @@
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
 
 // Variables
-@import "variables";
 
-
-@import "../../../node_modules/my-vue-tools/src/sass/parts/table";
-
-@import "../../../node_modules/my-vue-tools/src/sass/parts/admin-panel";
-
-@import "../../../node_modules/my-vue-tools/src/sass/parts/date-picker";
-
+@import "../../../node_modules/my-vue2-package/src/sass/admin-panel";
