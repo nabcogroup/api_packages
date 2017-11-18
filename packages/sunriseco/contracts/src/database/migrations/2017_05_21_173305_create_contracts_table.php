@@ -25,11 +25,11 @@ class CreateContractsTable extends Migration
             
             $table->date('period_end')->nullable();
 
+            $table->boolean('recurring_contract')->default(false);  //system 
+
             $table->integer('free_days')->default(0);
 
-            $table->integer('included_month')->default(0);
-
-            $table->integer('additional_month')->default(0);
+            $table->integer('included_free_month')->default(0);
             
             $table->decimal('amount')->default(0);
 
@@ -44,7 +44,6 @@ class CreateContractsTable extends Migration
             $table->timestamps();
 
             $table->softDeletes();
-
 
         });
     }

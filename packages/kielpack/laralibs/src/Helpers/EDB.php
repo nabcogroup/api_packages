@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: arnold.mercado
- * Date: 11/7/2017
- * Time: 4:11 PM
- */
 
 namespace KielPack\LaraLibs\Helpers;
 
@@ -14,9 +8,11 @@ use Illuminate\Support\Facades\DB;
 class EDB
 {
     private $db;
+    private $delimiter_string;
 
     public function __construct($table)
     {
+        $this->delimiter_string = '=';
         $this->db = DB::table($table);
     }
 
@@ -34,7 +30,9 @@ class EDB
     public function joins($joins = array())
     {
         foreach ($joins as $key => $value) {
-            $values = explode('=', $value);
+
+            $values = explode($this->delimiter_string, $value);
+
             $this->db = $this->db->join($key, $values[0], $values[1]);
         }
 
@@ -44,8 +42,11 @@ class EDB
     public function leftJoins($joins = array())
     {
         foreach ($joins as $key => $value) {
-            $values = explode('=', $value);
+
+            $values = explode($this->delimiter_string, $value);
+
             $this->db = $this->db->leftJoin($key, $values[0], $values[1]);
+
         }
 
         return $this;

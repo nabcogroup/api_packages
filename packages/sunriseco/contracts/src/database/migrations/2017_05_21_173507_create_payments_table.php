@@ -25,6 +25,8 @@ class CreatePaymentsTable extends Migration
 
             $table->string('payment_type',50);
 
+            $table->integer('payment_credit_id')->nullable();
+
             $table->string('payment_no',50);
 
             $table->date('period_start');
@@ -35,17 +37,17 @@ class CreatePaymentsTable extends Migration
 
             $table->string('bank',50);
 
-            $table->decimal('amount')->default(0.00);
+            $table->decimal('amount')->default(0);
 
             $table->string('remarks');
+
+            $table->integer('payment_debit_id')->nullable();
 
             $table->string('bank_account');
 
             $table->date('date_deposited')->nullable();
 
             $table->string('reference_no');
-
-            $table->date('posted_date');
 
             $table->decimal('paid_amount');
 
@@ -56,6 +58,8 @@ class CreatePaymentsTable extends Migration
             $table->integer('parent_id')->index();
 
             $table->text('history')->nullable();
+
+            $table->date('posted_date')->nullable();
 
             $table->timestamps();
                 

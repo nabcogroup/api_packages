@@ -23,7 +23,7 @@ class CreateContractTerminationsTable extends Migration
 
             $table->primary('contract_id');
 
-            $table->decimal('total_balance_payment');
+            $table->decimal('total_balance');
 
             $table->timestamps();
 
