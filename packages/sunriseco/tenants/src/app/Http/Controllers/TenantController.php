@@ -38,9 +38,9 @@ class TenantController {
         }
     
         //[Get: http://../api/show]
-        public function show($tenantId) {
+        public function edit($tenantId) {
     
-            $tenant = $this->repo->includes(['address'])->findById($tenantId)->single();
+            $tenant = $this->repo->includes(['address'])->find($tenantId);
             $lookups = Selection::getSelections(['tenant_type']);
     
             return compact('tenant','lookups');
@@ -54,20 +54,29 @@ class TenantController {
             $inputs = $request->filterInput();
             
             try {
-                $this->repo->saveTenant($inputs);
+
+                $tenant = $this->repo->saveTenant($inputs);
+
+                return Result::ok("Successfully save",["data" => $tenant]);
+
             }
             catch(Exception $e) {
-                Result::badRequest(["message" => $e->getMessage()]);
+
+                return Result::badRequest(["message" => $e->getMessage()]);
+
             }
         }
     
         //[Get: http://../api/search]
         public function search($regId = "") {
             try {
+
                 $tenant = $this->repo->getTenantByRegId($regId);
+
                 if($tenant == null) {
                     throw new Exception("Cannot Find Tenant");
                 }
+
             }
             catch(Exception $e) {
                 
