@@ -25,6 +25,8 @@ class CreateContractBillsTable extends Migration
 
             $table->boolean('closed')->index();
 
+            $table->decimal('forwarded_balance')->default(0);
+
             $table->timestamps();
 
             $table->softDeletes();

@@ -62,17 +62,17 @@ class TenantForm extends FormRequest
 
             "reg_date"      =>  "required|date",
 
-            "reg_id"        =>  "required",
+            "reg_id"        =>  "required|unique:tenants",
 
             "email_address" =>  "required|email",
 
             "mobile_no"     =>  "required_without_all:register_tenant.tel_no",
 
-            "tenant_address.address_1"        =>  'required',
+            "address.address_1"        =>  'required',
 
-            "tenant_address.city"             =>  'required',
+            "address.city"             =>  'required',
 
-            "tenant_address.postal_code"      =>  'required'
+            "address.postal_code"      =>  'required'
         ];
     }
 

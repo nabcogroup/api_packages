@@ -5,10 +5,14 @@ namespace Sunriseco\Tenants\App\Repositories;
 
 
 use Faker\Provider\Address;
-use App\Traits\PaginationTrait;
+
 use Sunriseco\Tenants\App\Models\Tenant;
-use KielPack\LaraLibs\Traits\StringTrait;
+
+use KielPack\LaraLibs\Base\AbstractRepository;
 use Sunriseco\Tenants\App\Models\TenantAddress;
+
+use KielPack\LaraLibs\Traits\StringTrait;
+use KielPack\LaraLibs\Traits\PaginationTrait;
 
 class TenantRepository extends AbstractRepository {
 
@@ -29,18 +33,18 @@ class TenantRepository extends AbstractRepository {
 
     protected function afterCreate(&$model,$children = array()) {
         
-        $address = new TenantAddress($children);
-        
-        $model->TenantAddress()->save($address);
-
+        if(!empty($children)) {
+            $address = new TenantAddress($children);
+            $model->address()->save($address);
+        }
     }
 
     public function saveTenant($model) {
 
-        $addressInstance = isset($model['tenant_address']) ? $model['tenant_address'] : false;
+        $addressInstance = isset($model['address']) ? $model['address'] : [];
         
         //remove tenant
-        $this->cleanupAttributes('tenant_address',$model);
+        $this->cleanupAttributes('address',$model);
 
         $tenant = $this->attach($model,$addressInstance)->instance();
         
@@ -66,19 +70,18 @@ class TenantRepository extends AbstractRepository {
             return $item;
 
         },$params);
-
-
+        
     }
 
     public function getTenantByRegId($regId) {
 
-        return $this->model->with('TenantAddress')->where('reg_id',$regId)->first();
-        
+        return $this->model->with('address')->where('reg_id',$regId)->first();
+
     }
 
     public function withChildren() {
 
-        $this->model = $this->model->with('TenantAddress');
+        $this->model = $this->model->with('address');
 
 
     }

@@ -33,7 +33,7 @@ class Tenant extends BaseModel
     public static function createInstance() {
         
         $tenant = new Tenant();
-        $tenant->tenant_address = new TenantAddress();
+        $tenant->address = new TenantAddress();
         return $tenant;
     }
 

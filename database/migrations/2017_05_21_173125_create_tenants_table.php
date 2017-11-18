@@ -16,28 +16,30 @@ class CreateTenantsTable extends Migration
          Schema::create('tenants', function (Blueprint $table) {
             
             $table->increments('id');
+            
+            $table->timestamps();
 
             $table->string('type',10)->index();
+
+            $table->string('code',50)->unique();
             
             $table->string('full_name',150);
 
             $table->string('email_address',50);
 
-            $table->string('tel_no',50)->nullable();
+            $table->string('tel_no',50);
 
-            $table->string('mobile_no',50)->nullable();
+            $table->string('mobile_no',50);
 
-            $table->string('fax_no',50)->nullable();
+            $table->string('fax_no',50);
 
             $table->date('reg_date');
 
-            $table->string('reg_id',150)->unique();
+            $table->string('reg_id',150)->index();
 
-            $table->string('reg_name',150)->nullable();
+            $table->string('reg_name',150);
 
             $table->string('gender',10)->nullable();
-
-            $table->timestamps();
 
             $table->softDeletes();
 

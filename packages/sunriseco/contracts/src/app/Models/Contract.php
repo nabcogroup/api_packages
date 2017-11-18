@@ -7,7 +7,6 @@ use App\ContractTermination;
 use Carbon\Carbon;
 
 
-
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 use KielPack\LaraLibs\Base\BaseModel;
@@ -16,6 +15,7 @@ use KielPack\LaraLibs\Traits\PeriodTrait;
 use KielPack\LaraLibs\Traits\SerializeTrait;
 
 
+use Sunriseco\Contracts\App\Services\RenewalPolicyService;
 use Sunriseco\Properties\App\Models\Villa;
 
 
@@ -24,7 +24,6 @@ class Contract extends BaseModel
     use SoftDeletes,
         PeriodTrait,
         SerializeTrait;
-
 
 
     protected $table = "contracts";
@@ -37,21 +36,23 @@ class Contract extends BaseModel
         'free_days',
         'included_month',
         'additional_month',
+        'recurring_contract',
         'amount',
         'villa_id',
         'tenant_id',
         'status'];
 
-    protected $appends = ['full_status', 'full_contract_type', 'payable_per_month', 'full_period_start', 'full_period_end', 'total_year_month', 'total_received_payment'];
+    protected $appends = ['full_status', 'full_contract_type', 'payable_per_month', 'full_period_start', 'full_period_end', 'total_year_month'];
 
     protected $hidden = ['deleted_at'];
-    
+
 
     //factory method
     public static function createInstance($defaultMonths)
     {
         $contract = new Contract();
         $contract->setDefaultPeriod(Carbon::now(), $defaultMonths);
+
         return $contract;
     }
 
@@ -81,7 +82,7 @@ class Contract extends BaseModel
 
             return $totalAmountPerDays;
         }
-        
+
         return 0;
     }
 
@@ -95,107 +96,164 @@ class Contract extends BaseModel
         return Carbon::parse($this->period_end)->addDays($this->extra_days)->toDateTimeString();
     }
 
-    
-
-    protected function getConfigureAttribute($value)
-    {
-        if ($value !== null) {
-            return $this->getMetaValue($value);
-        } else {
-            false;
-        }
+    protected function getPeriodExtendedAttribute() {
+        return $this->getPeriodExtensionDays(null,$this->free_days);
     }
 
+    /**********************************************
+     * Total Contract Value Amount per period
+     * *****************************************/
     protected function getTotalYearMonthAttribute()
     {
         return $this->calculateTotalYearMonth($this->period_start, $this->period_end);
     }
 
-    protected function getTotalReceivedPaymentAttribute()
+    /**********************************************
+     * Received Payments collection
+     * *****************************************/
+    protected function getReceivedPaymentsAttributes()
     {
-        $bills = $this->bill()->get();
-        $amount = 0;
-        if ($bills->count() > 0) {
-            foreach ($bills as $bill) {
-                $amount = $bill->Payments()->get()->sum('amount');
-            }
-        }
+        $payments = $this->bill()->firstOrFail()->payments()->where('status', 'received');
 
-        return $amount;
+        return $payments;
     }
+
+
+    /**********************************************
+     * Clear Payments collection
+     * *****************************************/
+    protected function getClearPaymentsAttribute()
+    {
+
+        $payments = $this->bill()->firstOrFail()->payments()->where('status', 'clear');
+
+        return $payments;
+    }
+
+    protected function getTotalBalanceAttribute()
+    {
+
+        $payments = $this->bill()->firstOrFail()->payments()->where('status', 'received')->where('payment_mode', 'payment');
+
+        $totalPendingPayment = $payments->sum('amount');
+
+        return $totalPendingPayment;
+    }
+
+
+
 
     /******** end mutators ********/
 
     /* navigation */
-    public function contractTerminations() {
+    public function termination()
+    {
         return $this->hasOne(ContractTermination::class, 'contract_id');
     }
 
-    public function villa() {
+    public function villa()
+    {
         return $this->hasOne(Villa::class, "id", "villa_id");
     }
 
-    public function tenant() {
+    public function tenant()
+    {
         return $this->hasOne(Tenant::class, "id", "tenant_id");
     }
 
-    public function bill() {
+    public function bill()
+    {
 
         return $this->hasMany(ContractBill::class, 'contract_id', 'id');
     }
 
     /* end navigation */
 
-    public function toComputeAmount($rate) {
+
+
+
+    public function toComputeAmount($rate)
+    {
 
         $totalPeriod = $this->getDiffDays();
         $totalMonth = intval($totalPeriod / 30);
         $this->amount = $rate * $totalMonth;
     }
 
-    public function pending() {
+    public function pending()
+    {
 
         $this->setStatus("pending");
 
         return $this;
     }
-    public function terminate() {
+
+    public function terminate($callback)
+    {
         $this->setStatus("terminated");
-
         return $this;
-
     }
-    public function cancel() {
+
+
+    public function cancel()
+    {
 
         $this->setStatus("cancelled");
 
         return $this;
     }
-    public function completed() {
+
+    public function completed()
+    {
 
         $this->setStatus("completed");
 
         return $this;
     }
-    public function active() {
+
+    public function active()
+    {
         $this->setStatus("active");
 
         return $this;
     }
-    public function isActive() {
+
+    public function isActive()
+    {
         return $this->hasStatusOf('active');
     }
 
-    public function isPending() {
+    public function isPending()
+    {
         return $this->hasStatusOf('pending');
     }
 
-    public function isTerminated() {
+    public function isTerminated()
+    {
         $this->hasStatusOf('terminated');
     }
 
-    public function canRenew() {
 
+    /****************************************
+     * * Req: Check if contract is cancellable by checking if no payment has been made
+     * output: True - if cancellable
+     * *****************************************/
+    public function canCancel()
+    {
+        $clearPayments = $this->clear_payments->get();
+        if ($clearPayments->count() > 0) {
+            return false;
+        }
+        return true;
     }
+
+    public function getOwner() {
+        return $this->tenant()->firstOrFail();
+    }
+
+    public function getCurrentVilla() {
+        return $this->villa()->firstOrFail();
+    }
+
 
 }
