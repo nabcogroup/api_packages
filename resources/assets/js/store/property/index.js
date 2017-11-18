@@ -1,5 +1,5 @@
-import {ErrorValidations} from "my-vue-tools/src/supports/errorValidation";
-import {cloneObject} from "my-vue-tools/src/supports/helper";
+import {ErrorValidations} from "my-vue2-package";
+import {cloneObject} from "my-vue2-package";
 
 
 

@@ -8,7 +8,7 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-import MyPlugins from "my-vue-tools/src/plugins/plugins";
+import MyPlugins from "my-vue2-package"
 import Main from "./components/Main.vue";
 import router from "./router";
 import {store} from "./store";

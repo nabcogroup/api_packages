@@ -34,7 +34,7 @@
 <script>
 import {mapState} from "vuex";
 import VillaDialog from "./VillaDialog";
-import {EventBus} from "my-vue-tools/src/events/eventbus";
+import {EventBus} from "my-vue2-package";
 
 export default {
   components: {

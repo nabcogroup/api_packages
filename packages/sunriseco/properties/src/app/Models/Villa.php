@@ -17,8 +17,11 @@ class Villa extends BaseModel
     protected $appends = ['full_rate_per_month','full_villa_class','full_status'];
 
     public static function createInstance() {
+
         $villa =  new Villa();
+
         $villa->lookups = Selection::getSelections(['villa_type']);
+
         return $villa;
     }
 
@@ -27,7 +30,22 @@ class Villa extends BaseModel
         if(empty($attributes)) {
             $attributes['rate_per_month'] = 0;
         }
+
         parent::__construct($attributes);
+
+    }
+
+
+    /**********************
+     *  Contracts
+     *
+     * */
+    public function contracts() {
+
+    }
+
+    public function activeContract() {
+
     }
 
 

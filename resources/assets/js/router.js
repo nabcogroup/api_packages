@@ -1,9 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-
 Vue.use(VueRouter);
-
 
 const router = new VueRouter(
     {
@@ -19,14 +17,14 @@ const router = new VueRouter(
                 component: require('./components/views/properties/Create')
             },
             {
-                name: 'property.view',
-                path: '/property/view/:id',
-                component: require('./components/views/properties/View')
-            },
-            {
                 name: 'fixed-asset',
                 path: '/fixed-asset',
                 component: require('./components/views/fixedassets/List')
+            },
+            {
+                name: 'fixed-asset.view',
+                path: '/fixed-asset/view/:id',
+                component: require('./components/views/fixedassets/View')
             },
 
         ]

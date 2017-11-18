@@ -1,7 +1,9 @@
-import {ErrorValidations} from "my-vue-tools/src/supports/errorValidation";
+import {ErrorValidations} from "my-vue2-package";
 
 const state = {
-    data: {},
+    data: {
+        depreciations:[]
+    },
     lookups: {
         
     },
@@ -12,6 +14,9 @@ const mutations = {
     createNew(state,data) {
         state.data = data.instance;
         state.lookups = data.lookups;
+    },
+    show(state,data) {
+        state.data = data.instance;
     }
 }
 
@@ -35,6 +40,20 @@ const actions = {
                 }
                 callback(false);
             });
+    },
+    show({state,commit},payload) {
+        const url = 'api/fixed-asset/show/' + payload.id;
+        axios
+            .get(url)
+            .then((response) => {
+                commit('show',response.data);
+                
+            })
+            .catch((errors) => {
+
+                payload.callback(false);
+            });
+
     }
 }
 

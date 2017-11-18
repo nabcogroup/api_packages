@@ -21,4 +21,8 @@ trait StringTrait
 
         return $value;
     }
+
+    public function cleanupAttributes($key,&$attributes) {
+        unset($attributes[$key]);
+    }
 }

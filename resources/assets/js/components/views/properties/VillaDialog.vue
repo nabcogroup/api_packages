@@ -32,8 +32,8 @@
 
 
 <script>
-import {toggleModal} from "my-vue-tools/src/mixins/mixins";
-import {EventBus} from "my-vue-tools/src/events/eventbus";
+import {toggleModal} from "my-vue2-package/src/mixins/mixins";
+import {EventBus} from "my-vue2-package";
 import {mapState,mapGetters} from "vuex";
 
 export default {
