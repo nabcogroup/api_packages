@@ -178,8 +178,11 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         KielPack\LaraLibs\LaraLibProvider::class,
+        
+        //Sunriseco package
         Sunriseco\Properties\PropertyProvider::class,
-        Sunriseco\Accounts\AccountsModuleProvider::class
+        Sunriseco\Accounts\AccountsModuleProvider::class,
+        Sunriseco\Tenants\TenantsModuleProvider::class
 
     ],
 
