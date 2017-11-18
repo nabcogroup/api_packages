@@ -5,10 +5,14 @@ namespace Sunriseco\Contracts\App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use KielPack\LaraLibs\Selections\SelectionModel as Selection;
+
 use KielPack\LaraLibs\Supports\Facades\Bundle;
 use KielPack\LaraLibs\Supports\Facades\EventListenerRegister;
 use KielPack\LaraLibs\Supports\Result;
-use KielPack\LaraLibs\Traits\StringTrait;
+use Sunriseco\Contracts\App\Http\Requests\ContractForm;
+
 
 class ContractController extends Controller
 {
@@ -42,23 +46,71 @@ class ContractController extends Controller
         }
     }
 
-    public function register()
+    /**********************************
+     *
+     * GET: api/contract/create
+     * */
+    public function create()
     {
+        try {
 
-        //check if the has a vacant villa
-        //if not redirect back to list
-        $bundle = new Bundle();
+            $outputs = array();
 
-        event(new Verify($bundle, new EventListenerRegister(["VerifyVillaVacancy"])));
-        
-        $count = $bundle->getOutput("count");
-       
-        if ($count == 0) {
-            return redirect()->route('contract.manage');
+            $data = $this->contractRepo->create(self::DEFAULT_PERIOD);
+
+            $lookups = Selection::getSelections(["contract_type","tenant_type"]);
+
+            $bundle = new Bundle();
+            //not created yet
+            event(new OnPullRequest($bundle, new EventListenerRegister(["GetProperty"])));
+
+            $properties = $bundle->getOutput("properties");
+
+            return compact("data", "lookups","properties");
+
         }
+        catch (Exception $e) {
 
-        return view("contract.register");
+            return Result::badRequest(["message" => $e->getMessage()]);
+        }
     }
+
+    public function store(ContractForm $request) {
+
+        $inputs = $request->filterInput();
+        try {
+
+            $bundle = new Bundle();
+
+            $bundle->add('tenant', $inputs['register_tenant']);
+            $bundle->add('villaId', $inputs['villa_id']);
+
+            event(new OnCreating($bundle, new EventListenerRegister(["GetVilla", "CreateTenant"])));
+
+            if (!$bundle->hasOutput()) {
+                throw new Exception("Internal Error");
+            }
+
+            $tenantOutput = $bundle->getOutput('tenant');
+            $villaOutput = $bundle->getOutput('villa');
+
+            $inputs['tenant_id'] = $tenantOutput->id;
+            $inputs['villa_no']  = $villaOutput->villa_no;
+
+            $contract = $this->contractRepo->saveContract($inputs);
+            $bundle->clearAll();
+            $bundle->add('villa', ['id' => $contract->villa_id,'status' => 'occupied']);
+
+            event(new NotifyUpdate($bundle, new EventListenerRegister(["UpdateVillaStatus","CreatePaymentSchedule"])));
+
+            return Result::ok("Successfully save!!", ["id" => $contract->contract_no]);
+
+        }
+        catch (Exception $e) {
+            return Result::badRequest(["message" => $e->getMessage()]);
+        }
+    }
+
 
     /****************************
      *
@@ -193,40 +245,7 @@ class ContractController extends Controller
         }
     }
 
-    public function apiCreate()
-    {
-        try {
 
-            $outputs = array();
-            $data = $this->contractRepo->create(self::DEFAULT_PERIOD);
-
-            //extra
-            $data->prep_series = 1;
-            $data->prep_bank = "";
-            $data->prep_due_date = "";
-            $data->prep_ref_no = "";
-
-            $lookups = $this->selections->getSelections(["contract_type","tenant_type","villa_location","bank"]);
-            $lookups["due_date"] = [
-                [
-                    "value" => "1",
-                    "text" => "Every 1st Day"
-                ],
-                [
-                    "value" => "15",
-                    "text" => "Every 15 Days"
-                ],
-                [
-                    "value" => "30",
-                    "text" => "Every 30 Days"
-                ],
-            ];
-
-            return compact("data", "lookups");
-        } catch (Exception $e) {
-            return Result::badRequest(["message" => $e->getMessage()]);
-        }
-    }
 
     public function apiRecalc(ContractCalcForm $request)
     {
@@ -257,42 +276,6 @@ class ContractController extends Controller
         }
     }
 
-    public function apiStore(ContractForm $request) {
-
-        $inputs = $request->filterInput();
-        try {
-            $bundle = new Bundle();
-            $bundle->add('tenant', $inputs['register_tenant']);
-            $bundle->add('villaId', $inputs['villa_id']);
-
-            event(new OnCreating($bundle, new EventListenerRegister(["GetVilla", "CreateTenant"])));
-
-            if (!$bundle->hasOutput()) {
-                throw new Exception("Internal Error");
-            }
-
-            $tenantOutput = $bundle->getOutput('tenant');
-            $villaOutput = $bundle->getOutput('villa');
-
-            //remove tenant
-            unset($inputs['register_tenant']);
-
-            $inputs['tenant_id'] = $tenantOutput->id;
-            $inputs['villa_no']  = $villaOutput->villa_no;
-            
-            $contract = $this->contractRepo->saveContract($inputs);
-
-            $bundle->clearAll();
-            $bundleValue = ['id' => $contract->villa_id,'status' => 'occupied'];
-            $bundle->add('villa', $bundleValue);
-
-            event(new NotifyUpdate($bundle, new EventListenerRegister(["UpdateVillaStatus"])));
-
-            return Result::ok("Successfully save!!", ["id" => $contract->contract_no]);
-        } catch (Exception $e) {
-            return Result::badRequest(["message" => $e->getMessage()]);
-        }
-    }
 
     public function apiCancel(Request $request)
     {

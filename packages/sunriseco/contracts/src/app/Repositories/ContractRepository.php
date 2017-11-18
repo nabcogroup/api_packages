@@ -29,6 +29,7 @@ class ContractRepository extends AbstractRepository
             $this->cleanupAttributes('villa_no',$model);
             $model['contract_no'] = "C" . $villaNo . "-" . Carbon::now()->year . "-" . $this->model->createNewId();
         }
+
         $model['status'] = 'pending';
     }
 
