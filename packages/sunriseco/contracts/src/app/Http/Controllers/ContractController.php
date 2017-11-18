@@ -5,10 +5,14 @@ namespace Sunriseco\Contracts\App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use KielPack\LaraLibs\Supports\Facades\Bundle;
+use KielPack\LaraLibs\Supports\Facades\EventListenerRegister;
 use KielPack\LaraLibs\Supports\Result;
+use KielPack\LaraLibs\Traits\StringTrait;
 
 class ContractController extends Controller
 {
+
 
     private $contractRepo;
 
@@ -56,12 +60,6 @@ class ContractController extends Controller
         return view("contract.register");
     }
 
-    public function calendar()
-    {
-
-        return view("contract.calendar");
-    }
-
     /****************************
      *
      * Show the balance in contract
@@ -91,61 +89,76 @@ class ContractController extends Controller
         try {
 
             //get the old contract including villa
-            $oldContract = $this->contractRepo->includeAssociates()->find($id);
+            $currentContract = $this->contractRepo->includes('tenants','villas')->find($id);
 
             //make sure the contract is active
-            if (!$oldContract->isActive()) {
+            if (!$currentContract->isActive()) {
                 throw new Exception('Contract is not active');
-            }
-
-            //check if amount balance
-            $amountBalance = $oldContract->getRemainingBalance();
-            if ($amountBalance > 0) {
-                throw new Exception('Unable to renew. Contract has a pending balance');
             }
 
             //recalculate the past contract period
             //$remainingPeriodDay = $oldContract->getRemainingPeriod();
 
             //display contract
-            $oldContract->setDefaultPeriod(\Carbon\Carbon::parse($oldContract->period_end), self::DEFAULT_PERIOD);
-            //extra
-            $oldContract->prep_series = 1;
-            $oldContract->prep_bank = "";
-            $oldContract->prep_due_date = "";
-            $oldContract->prep_ref_no = "";
-            $lookups = $this->selections->getSelections(["contract_type","bank"]);
-            $lookups["due_date"] = [
-                [
-                    "value" => "1",
-                    "text" => "Every 1st Day"
-                ],
-                [
-                    "value" => "15",
-                    "text" => "Every 15 Days"
-                ],
-                [
-                    "value" => "30",
-                    "text" => "Every 30 Days"
-                ],
+            $currentContract->setDefaultPeriod(\Carbon\Carbon::parse($oldContract->period_extended), self::DEFAULT_PERIOD);
+
+            $display = [
+                'tenant'                =>  $currentContract->getOwner()->full_name,
+                'villa_no'              =>  $currentContract->getCurrentVilla()->villa_no,
+                'period_start'          =>  $currentContract->period_start,
+                'period_end'            =>  $currentContract->period_end,
+                'recurring_contract'    =>  $currentContract->recurring_contract,
+                'free_days'             =>  $currentContract->free_days,
+                'included_free_months'  =>  $currentContract->included_free_months,
+                'total_balance'         =>  $currentContract->total_balance
             ];
-            return compact("oldContract","lookups");
+
+            return compact("display");
+        }
+        catch (Exception $e) {
+
+            return Result::badRequest(['message' => $e->getMessage()]);
+
+        }
+    }
+
+    public function update(Request $renewal) {
+        try {
+
+            $entity = $renewal->all();
+            $id = $entity['id'];
+            $this->
+            $oldContract = $this->contractRepo->find($entity['id']);
+            if ($oldContract) {
+                //make sure the contract is active
+                if (!$oldContract->isActive()) {
+                    throw new Exception('Contract is not active');
+                }
+
+                $entity['villa_id'] = $oldContract->villa_id;
+                $entity['tenant_id'] = $oldContract->tenant_id;
+                $entity['period_start'] = Carbon::parse($entity['period_start']);
+                $entity['period_end'] = Carbon::parse($entity['period_end']);
+                $newContract = $this->contractRepo->renew($oldContract,$entity);
+
+                $bundle = new Bundle();
+                $bundle->add('forwarded_balance',$oldContract->total_balance);
+                $bundle->add('contract',$newContract);
+
+                //not finished yet
+                event(new OnCreating($bundle, new EventListenerRegister(["CreatePaymentSchedule"])));
+
+
+            }
+
+            return Result::ok("Successfully update!!!", ["id" => $newContract->contract_no]);
+
         }
         catch (Exception $e) {
             return Result::badRequest(['message' => $e->getMessage()]);
         }
     }
 
-    public function apiUpdateExtended()
-    {
-
-        $contracts = \App\Contract::all();
-        foreach ($contracts as $contract) {
-            $contract->period_end_extended = Carbon::parse($contract->period_end)->addDays($contract->extra_days);
-            $contract->save();
-        }
-        return Result::ok("Successful");
-    }
 
     public function apiCalendar(Request $request)
     {   
@@ -309,52 +322,7 @@ class ContractController extends Controller
 
 
 
-    public function apiUpdate(RenewalForm $renewal) {
-        
-        try {
 
-            $entity = $renewal->filterInput();
-            
-            $oldContract = $this->contractRepo->find($entity['id']);
-            if ($oldContract) {
-                //make sure the contract is active
-                if (!$oldContract->isActive()) {
-                    throw new Exception('Contract is not active');
-                }
-            
-                //check if amount balance
-                $amountBalance = $oldContract->getRemainingBalance();
-                if ($amountBalance > 0) {
-                    throw new Exception('Unable to renew. Contract has a pending balance');
-                }
-
-                $bundle = new Bundle();
-                $villaId = $oldContract->villa_id;
-                $bundle->add('villaId', $villaId);
-                event(new OnCreating($bundle, new EventListenerRegister(["GetVilla"])));
-                
-                $villaOutput = $bundle->getOutput('villa');
-                if ($villaOutput != null) {
-                    
-                    $entity['id'] = 0; //make new
-                    $entity['villa_no'] = $villaOutput->villa_no;
-                    $entity['villa_id'] = $villaOutput->getId();
-                    $entity['tenant_id'] = $oldContract->tenant_id;
-                    $entity['contract_type'] = $entity['contract_type'];
-                    
-                    
-                    $newContract = $this->contractRepo->saveContract($entity);
-                    
-                    //make the old contract complete
-                    $oldContract->completed()->save();
-                }
-            }
-
-            return Result::ok("Successfully update!!!", ["id" => $newContract->contract_no]);
-        } catch (Exception $e) {
-            return Result::badRequest(['message' => $e->getMessage()]);
-        }
-    }
 
     public function apiTerminate(TerminateForm $request)
     {

@@ -29,7 +29,7 @@ class CreateContractsTable extends Migration
 
             $table->integer('free_days')->default(0);
 
-            $table->integer('included_free_month')->default(0);
+            $table->integer('included_free_months')->default(0);
             
             $table->decimal('amount')->default(0);
 

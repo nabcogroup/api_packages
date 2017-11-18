@@ -128,37 +128,31 @@ class ContractRepository extends AbstractRepository
      *
      *  verify if can renew
      ******************************/
-    public function renew($models)
+    public function renew($oldContract,$models)
     {
-        $oldContract = $this->find($models['id']);
+        $oldContractNo = $oldContract->contract_no;
 
-        if ($oldContract && $oldContract->isActive()) {
+        $this->cleanupAttributes('id',$models);
 
-            $oldContractNo = $oldContract->contract_no;
+        preg_match('/^([^-]+?)-([0-9]+?)-([0-9]+?)$/', $oldContractNo, $splits);
 
-            preg_match('/^([^-]+?)-([0-9]+?)-([0-9]+?)$/', $oldContractNo, $splits);
-
-            if (sizeof($splits) > 0) {
-                array_splice($splits, 0, 1); //exclude the whole contractno
-                $splits[1] = Carbon::now()->year;
-                $splits[2] = $this->createNewId();
-            }
-
-            //set contract no
-            $newContractNo = implode('-', $splits);
-
-            $model['contract_no'] = $newContractNo + "-R";
-
-            $this->attach($models, "create");
-
-            $oldContract->completed();
-
-            $oldContract->save();
-
+        if (sizeof($splits) > 0) {
+            array_splice($splits, 0, 1); //exclude the whole contractno
+            $splits[1] = Carbon::now()->year;
+            $splits[2] = $this->createNewId();
         }
-        else {
-            return Result::badRequest(['message' => 'Contract is not active or invalid']);
-        }
+
+        //set contract no
+        $newContractNo = implode('-', $splits);
+
+        $model['contract_no'] = $newContractNo + "-R";
+
+        $this->attach($models);
+
+        $oldContract->completed();
+
+        $oldContract->save();
+
     }
 
     public function cancelled($models)

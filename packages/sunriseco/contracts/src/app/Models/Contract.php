@@ -36,6 +36,7 @@ class Contract extends BaseModel
         'free_days',
         'included_month',
         'additional_month',
+        'recurring_contract',
         'amount',
         'villa_id',
         'tenant_id',
@@ -51,6 +52,7 @@ class Contract extends BaseModel
     {
         $contract = new Contract();
         $contract->setDefaultPeriod(Carbon::now(), $defaultMonths);
+
         return $contract;
     }
 
@@ -92,6 +94,10 @@ class Contract extends BaseModel
     protected function getFullPeriodEndAttribute()
     {
         return Carbon::parse($this->period_end)->addDays($this->extra_days)->toDateTimeString();
+    }
+
+    protected function getPeriodExtendedAttribute() {
+        return $this->getPeriodExtensionDays(null,$this->free_days);
     }
 
     /**********************************************
@@ -163,6 +169,9 @@ class Contract extends BaseModel
 
     /* end navigation */
 
+
+
+
     public function toComputeAmount($rate)
     {
 
@@ -224,17 +233,6 @@ class Contract extends BaseModel
         $this->hasStatusOf('terminated');
     }
 
-    /****************************************
-     * * Req: Check if contract is renewable by checking if no balance
-     * output: True - if cancellable
-     * *****************************************/
-    public function canRenew()
-    {
-        if ($this->total_balance > 0) {
-            return false;
-        }
-        return true;
-    }
 
     /****************************************
      * * Req: Check if contract is cancellable by checking if no payment has been made
@@ -247,6 +245,14 @@ class Contract extends BaseModel
             return false;
         }
         return true;
+    }
+
+    public function getOwner() {
+        return $this->tenant()->firstOrFail();
+    }
+
+    public function getCurrentVilla() {
+        return $this->villa()->firstOrFail();
     }
 
 
