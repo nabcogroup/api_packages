@@ -181,8 +181,9 @@ return [
         
         //Sunriseco package
         Sunriseco\Properties\PropertyProvider::class,
-        Sunriseco\Accounts\AccountsModuleProvider::class,
-        Sunriseco\Tenants\TenantsModuleProvider::class
+        Sunriseco\Tenants\TenantsModuleProvider::class,
+        Sunriseco\Contracts\ContractModuleProvider::class,
+
 
     ],
 
@@ -232,11 +233,6 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
-        "Bundle" => KielPack\LaraLibs\Supports\Facades\Bundle::class,
-        "EventListenerRegister" => KielPack\LaraLibs\Supports\Facades\EventListenerRegister::class,
-        "FileManager" => KielPack\LaraLibs\Supports\Facades\FileManager::class,
-        "Result" => KielPack\LaraLibs\Supports\Facades\Result::class,
 
     ],
 

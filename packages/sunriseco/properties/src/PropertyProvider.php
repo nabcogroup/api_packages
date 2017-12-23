@@ -25,16 +25,15 @@ class PropertyProvider extends ServiceProvider
             __DIR__ . "/database/migrations" => base_path("database/migrations")
         ]);
 
-
-
-
     }
 
 
     public function register(){
 
         $this->app->bind('propertyRoutes',"Sunriseco\Properties\App\Http\Routes\PropertyRoutes");
+
         $loader = AliasLoader::getInstance();
+
         $loader->alias('PropertyRoutes',"Sunriseco\Properties\App\Http\Routes\Facades\PropertyRoutes");
 
     }

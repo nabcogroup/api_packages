@@ -27,7 +27,8 @@
             
             "Sunriseco\\Properties\\": "packages/sunriseco/properties/src",
             "Sunriseco\\Accounts\\": "packages/sunriseco/accounts/src",
-            "Sunriseco\\Tenants\\": "packages/sunriseco/tenants/src"
+            "Sunriseco\\Tenants\\": "packages/sunriseco/tenants/src",
+            "Sunriseco\\Contracts\\": "packages/sunriseco/contracts/src"
         }
     },
     "autoload-dev": {

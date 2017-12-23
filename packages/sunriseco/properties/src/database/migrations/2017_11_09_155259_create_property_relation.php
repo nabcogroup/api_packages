@@ -17,9 +17,13 @@ class CreatePropertyRelation extends Migration
 
             //foreign key
             $table->foreign('property_id')
+
             ->references('id')
+
             ->on('properties')
+
             ->onDelete('cascade');
+
         });
     }
 
@@ -32,7 +36,9 @@ class CreatePropertyRelation extends Migration
     {
         //products  - categories
         Schema::table('villas', function(Blueprint $table) {
+
             $table->dropForeign('villas_property_id_foreign');
+
         });
     }
 }

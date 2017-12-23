@@ -15,6 +15,7 @@ class SelectionModel extends Model
     //
     public static function getSelections(Array $categories = array()) {
 
+
         $categories = static::wherein('category',$categories)->orderBy('sort_order')->get();
 
         $lookups = array();

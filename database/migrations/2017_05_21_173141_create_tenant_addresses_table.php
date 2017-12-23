@@ -14,6 +14,7 @@ class CreateTenantAddressesTable extends Migration
     public function up()
     {
         Schema::create('tenant_addresses', function (Blueprint $table) {
+
             $table->integer('tenant_id')->unsigned();
 
             $table->string('address_1');

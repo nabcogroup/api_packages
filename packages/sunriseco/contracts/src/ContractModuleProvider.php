@@ -3,6 +3,7 @@
 namespace Sunriseco\Contracts;
 
 
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 
 class ContractModuleProvider extends ServiceProvider
@@ -22,6 +23,8 @@ class ContractModuleProvider extends ServiceProvider
         $loader = AliasLoader::getInstance();
 
         $loader->alias('ContractRoutes',"Sunriseco\Tenants\App\Http\Routes\Facades\ContractRoutes");
-        
+
     }
+
+
 }

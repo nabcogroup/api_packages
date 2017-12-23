@@ -8,8 +8,6 @@ use Illuminate\Foundation\Http\FormRequest;
 class ContractForm extends FormRequest
 {
 
-    use UnsetterTrait;
-
     public function authorize()
     {
         return true;

@@ -19,7 +19,7 @@ class CreateContractBillsTable extends Migration
 
             $table->string('bill_no', 50)->unique();
 
-            $table->integer('contract_id')->unsigned();
+            $table->integer('contract_id')->index()->unsigned();
 
             $table->integer('user_id')->index();
 

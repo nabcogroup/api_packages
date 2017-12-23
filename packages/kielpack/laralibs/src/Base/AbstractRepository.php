@@ -1,15 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: arnold.mercado
- * Date: 11/7/2017
- * Time: 12:14 PM
- */
 
 namespace KielPack\LaraLibs\Base;
 
 
 
+use Illuminate\Support\Facades\Auth;
 use KielPack\LaraLibs\Base\Traits\RepoQueryTrait;
 use Mockery\Exception;
 
@@ -50,11 +45,9 @@ abstract class AbstractRepository
 
         try {
             if($state == "create") {
-                
+
                 $this->model = $this->definedModel();
-                
                 $this->beforeCreate($model,$this->model);
-                
                 $this->model->toMap($model);
 
                 if($includeUser)
@@ -89,13 +82,47 @@ abstract class AbstractRepository
     }
 
     //new
-    public function save($request) {
+    public function saveUser(Array $data) {
+
+        $data['user_id'] = Auth::user()->getAuthIdentifier();
+
+        $this->saveOnly($data);
+
+
+    }
+
+    public function save(Array $data) {
+
+        $this->model = $this->definedModel();
+        $this->beforeCreate($data,$this->model);
+        $this->model->toMap($data);
+        $this->model->save();
+
+    }
+
+
+
+    public function update(Array $data,$pkey = 'id') {
+
+        $this->beforeUpdate($data);
+        $this->model = $this->model->find($data[$pkey]);
+        $this->model->toMap($data);
+        $this->model->save();
+    }
+
+    public function updateUser(Array $data,$pkey = 'id') {
+
+        $data['user_id'] = Auth::user()->getAuthIdentifier();
+
+        $this->update($data,$pkey);
 
     }
 
 
     public function isEditMode($request) {
+
         return (isset($request['id']) && $request['id'] > 0);
+
     }
 
 
