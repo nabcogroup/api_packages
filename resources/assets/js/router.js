@@ -9,7 +9,7 @@ const router = new VueRouter(
             {
                 name: 'property',
                 path: '/property',
-                component: require('./components/views/properties/List')
+                component: require('./components/views/properties/List'),
             },
             {
                 name: 'property.create',
@@ -17,14 +17,9 @@ const router = new VueRouter(
                 component: require('./components/views/properties/Create')
             },
             {
-                name: 'fixed-asset',
-                path: '/fixed-asset',
-                component: require('./components/views/fixedassets/List')
-            },
-            {
-                name: 'fixed-asset.view',
-                path: '/fixed-asset/view/:id',
-                component: require('./components/views/fixedassets/View')
+                name: 'property.edit',
+                path: '/property/edit/:id',
+                component: require('./components/views/properties/Edit')
             },
 
         ]

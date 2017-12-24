@@ -25,6 +25,7 @@ class PropertyRepository extends AbstractRepository
     }
 
     public function getProperties() {
+
         $params = [];
 
         $activeRecords = $this->model->customFilter($params);
@@ -41,17 +42,17 @@ class PropertyRepository extends AbstractRepository
         return $activeRecords->get();
     }
 
-    public function saveProperty($request) {
+    public function saveModel(array $data) {
 
-        if(isset($request['villas'])) {
-            $children = $request['villas'];
-            unset($request['villas']);
-        }
-        else {
-            $children = [];
-        }
+        $villas = isset($data['villas']) ? extract_unset($data,'villas') : [];
 
-        $this->attach($request,$children);
+        $this->save($data);
+
+        if(!empty($villas)) {
+            foreach ($villas as $villa) {
+                $this->model->villas()->create($villa);
+            }
+        }
     }
 
 

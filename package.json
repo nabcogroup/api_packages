@@ -27,6 +27,7 @@
     "vuex": "^3.0.1"
   },
   "dependencies": {
-    "accounting-js": "^1.1.1"
+    "accounting-js": "^1.1.1",
+    "my-vue2-package": "^1.0.8"
   }
 }

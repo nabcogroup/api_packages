@@ -22,8 +22,10 @@ class UnitController extends Controller
 
         try {
             $property = $this->repo->find($id);
-            $unit = $property->createNewUnit();
-            return Result::response(['data' => $unit]);
+
+            $villa = $property->createNewVilla();
+
+            return Result::response(['data' => $villa]);
         }
         catch(Exception $e) {
             return Result::badRequest(['message' => $e->getMessage()]);

@@ -6,18 +6,17 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-use KielPack\LaraLibs\Selections\SelectionModel as Selection;
+use KielPack\LaraLibs\Supports\Result;
 
 use KielPack\LaraLibs\Supports\Facades\Bundle;
-use KielPack\LaraLibs\Supports\Facades\EventListenerRegister;
-use KielPack\LaraLibs\Supports\Result;
+use Kielpack\Laralibs\App\Events\OnPullRequest;
 use Sunriseco\Contracts\App\Http\Requests\ContractForm;
+use KielPack\LaraLibs\Selections\SelectionModel as Selection;
+use KielPack\LaraLibs\Supports\Facades\EventListenerRegister;
 
 
 class ContractController extends Controller
 {
-
-
     private $contractRepo;
 
     const DEFAULT_PERIOD = 12;
@@ -27,24 +26,7 @@ class ContractController extends Controller
     {
         $this->contractRepo = $repository;
     }
-
-
-
-    public function show($id)
-    {
-        try {
-
-            if ($contract = $this->contractRepo->find($id)) {
-                $billNo = $contract->bill()->first()->bill_no;
-                return redirect()->route("bill.show", $billNo);
-            } 
-            else {
-                throw new Exception("Contract not found");
-            }
-        } catch (Exception $e) {
-            return Result::badRequestWeb($e);
-        }
-    }
+   
 
     /**********************************
      *
@@ -61,10 +43,11 @@ class ContractController extends Controller
             $lookups = Selection::getSelections(["contract_type","tenant_type"]);
 
             $bundle = new Bundle();
+            
             //not created yet
             event(new OnPullRequest($bundle, new EventListenerRegister(["GetProperty"])));
 
-            $properties = $bundle->getOutput("properties");
+            $properties = $bundle->getOutput("property");
 
             return compact("data", "lookups","properties");
 
@@ -212,42 +195,22 @@ class ContractController extends Controller
     }
 
 
-    public function apiCalendar(Request $request)
-    {   
-        try {
-            $periods = $request->all();
-
-            $eventCalendar  = $this->contractRepo->getEventCalendar($periods['start'],$periods['end']);
-            $eventCalendar->create(function($collection,&$event) {
-                    $event["title"] = $collection->villa()->first()->villa_no ." - ".$collection->tenant()->first()->full_name;
-                    $event["id"]    = $collection->getId();
-                    $event["full_name"]   =  $collection->tenant()->first()->full_name;
-                    $event["contract_no"]   =  $collection->contract_no;
-            });
-
-            return $eventCalendar->getEvents();
-        } catch (Exception $e) {
-            return Result::badRequest(["message" => $e->getMessage()]);
-        }
-    }
-
-    public function apiGetList(Request $request, $status = 'pending')
+    public function all(Request $request)
     {
 
         try {
             //get user contractsp
-            $contracts = $this->contractRepo->getContracts($status, $request->input('filter_field'), $request->input('filter_value'));
+            $contracts = $this->contractRepo->getContracts($request->input('filter_field'), $request->input('filter_value'));
             //evaluate contract pending
-            
             return $contracts;
-        } catch (Exception $e) {
+        } 
+        catch (Exception $e) {
             Result::badRequest(["message" => $e->getMessage()]);
         }
     }
+    
 
-
-
-    public function apiRecalc(ContractCalcForm $request)
+    public function valueCalculation(ContractCalcForm $request)
     {
 
         $inputs = $request->filterInput();
@@ -277,7 +240,7 @@ class ContractController extends Controller
     }
 
 
-    public function apiCancel(Request $request)
+    public function cancel(Request $request)
     {
         try {
             $contract = $this->contractRepo->find($request->input('id'));
@@ -304,13 +267,10 @@ class ContractController extends Controller
     }
 
 
-
-
-
-    public function apiTerminate(TerminateForm $request)
+    public function terminate(Request $request)
     {
-
         try {
+
             $inputs = $request->all();
             
             //validate password
@@ -340,7 +300,8 @@ class ContractController extends Controller
             } else {
                 throw new Exception('Contract failed to terminate');
             }
-        } catch (Exception $e) {
+        } 
+        catch (Exception $e) {
             return Result::badRequest(['message' => $e->getMessage()]);
         }
     }

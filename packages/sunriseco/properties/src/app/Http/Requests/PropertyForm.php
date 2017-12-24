@@ -28,6 +28,10 @@ class PropertyForm extends FormRequest
             'name'  =>  'required'
         ];
 
+        if(!isset($this->id) || $this->id == 0) {
+            $validate['code'] = 'required|unique:properties';
+        }
+
         return $validate;
     }
 

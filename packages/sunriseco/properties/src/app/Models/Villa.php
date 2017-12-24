@@ -48,6 +48,16 @@ class Villa extends BaseModel
 
     }
 
+    public function vacantList() {
+        return $this->where('status','vacant');
+    }
+
+    public function occupiedList() {
+        return $this->where('status','occupied');
+    }
+
+
+
 
 
     // public function getTenant() {
@@ -69,8 +79,6 @@ class Villa extends BaseModel
         return number_format($this->rate_per_month,2)." ".config("app.CURRENCY_FORMAT");
     }
 
-
-
     public function getFullVillaClassAttribute() {
         return Selection::convertCode($this->villa_class);
     }
@@ -82,6 +90,10 @@ class Villa extends BaseModel
     public function getStatusCountAttribute() {
         return $this->select('status',\DB::raw('count(id) as count'))->groupBy('status')->get();
     }
+
+    
+
+    
 
 
     public function vacantOnly() {
