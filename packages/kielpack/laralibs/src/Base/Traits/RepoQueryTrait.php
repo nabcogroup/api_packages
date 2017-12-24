@@ -25,8 +25,13 @@ trait RepoQueryTrait
         return $this->model;
     }
 
-    public function find($id){
-        return $this->model->find($id);
+    public function find($id,$includes = array()){
+        if(!empty($includes)) {
+            return $this->model->with($includes)->where('id',$id)->first();
+        }
+        else {
+            return $this->model->find($id);
+        }
     }
 
     public function explicitQuery($field,$value,$opt='=') {

@@ -58,9 +58,13 @@ class PropertyController extends Controller
 
     public function edit($id) {
 
-        $model = $this->repo->find($id);
-
-        return Result::response(['data' => $model]);
+        $model = $this->repo->find($id,["villas"]);
+        $lookups = Selection::getSelections(['villa_type']);
+        
+        return Result::response([
+            'data' => $model,
+            'lookups' => $lookups
+        ]);
     }
 
     public function store(PropertyForm $request) {

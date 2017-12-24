@@ -2,7 +2,7 @@
   <v-form-dialog modal-id="villaDialog" v-model="errors" @submit="onSubmit" dialog-title="New Villa/Unit">
       <div class="form-horizontal">
           <v-control-wrapper label="Villa No">
-              <v-input-control v-model="villa.villa_no" name="villaNo"></v-input-control>
+              <v-input-control v-model="villa.villa_no" name="villaNo" ></v-input-control>
               <v-error-span v-model="errors" name="villaNo"></v-error-span>
           </v-control-wrapper>
           <v-control-wrapper label="Description">
@@ -57,7 +57,13 @@ export default {
           
       },
       onSubmit() {
-          this.$store.commit('property/insertVilla');
+          if(this.villa.id !== undefined && this.villa.id !== 0) {
+              this.$store.commit('property/updateVilla')
+          }
+          else {
+              this.$store.commit('property/insertVilla');
+          }
+
           EventBus.$emit('villaDialog.close');
       }
   }

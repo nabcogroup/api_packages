@@ -28,6 +28,6 @@
   },
   "dependencies": {
     "accounting-js": "^1.1.1",
-    "my-vue2-package": "^1.0.7"
+    "my-vue2-package": "^1.0.8"
   }
 }

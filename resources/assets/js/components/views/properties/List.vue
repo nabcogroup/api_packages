@@ -1,7 +1,7 @@
 <template>
     <div class="row">
         <v-page-header-bar title="Property List"></v-page-header-bar>
-        <v-live-view :grid="gridView"></v-live-view>
+        <v-live-view :grid="gridView" @action="action"></v-live-view>
     </div>
 </template>
 
@@ -17,6 +17,7 @@
                         {name: '$action', column: 'Actions', style: 'width:5%'}
                     ],
                     actions: [
+                        {key: 'edit', name: 'Edit'},
                         {key: 'view', name: 'View'}
                     ],
                     source: {
@@ -26,6 +27,13 @@
                 }
             }
         },
+        methods: {
+            action(a,v,k) {
+                if(a === 'edit') {
+
+                }
+            }
+        }
 
     }
 </script>

@@ -53,7 +53,6 @@ class PropertyRepository extends AbstractRepository
                 $this->model->villas()->create($villa);
             }
         }
-
     }
 
 

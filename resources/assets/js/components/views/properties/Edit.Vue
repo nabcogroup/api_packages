@@ -1,5 +1,5 @@
 <template>
-    <v-panel header="Create Property">
+    <v-panel header="Edit Property">
         <div class="page-header">
             <h4>Information</h4>
         </div>
@@ -20,27 +20,22 @@
             <div class="col-sm-4">
 
             </div>
+
+            <div class="col-md-12">
+                <v-page-header-bar title="Villas" @click="onClick"></v-page-header-bar>
+                <v-grid-view :grid="gridView" :data="data.villas" @action="action"></v-grid-view>
+                <villa-dialog></villa-dialog>
+            </div>
+
         </div>
-
-        <div class="col-md-12">
-            <v-page-header-bar title="Villas" @click="onClick"></v-page-header-bar>
-            <v-grid-view :grid="gridView" :data="data.villas"></v-grid-view>
-            <villa-dialog></villa-dialog>
-        </div>
-
-
-        <div class="col-md-2 col-md-offset-10">
-            <button class="btn btn-info btn-block" @click="saveData()">Save</button>
-        </div>
-
     </v-panel>
-
 </template>
 
 <script>
-    import {mapState, mapGetters} from "vuex";
-    import VillaDialog from "./VillaDialog.vue";
+
+    import {mapState,mapGetters}  from "vuex";
     import {EventBus} from "my-vue2-package";
+    import VillaDialog from "./VillaDialog.vue";
 
     export default {
         components: {
@@ -48,38 +43,55 @@
         },
         data() {
             return {
+                loading: false,
                 gridView: {
                     columns: [
                         {name: 'villa_no', column: 'Villa No'},
                         {name: 'description', column: 'Description'},
-                        {name: 'rate_per_month', column: 'Rate/Month', dtype: 'currency'}
-                    ]
+                        {name: 'rate_per_month', column: 'Rate/Month', dtype: 'currency'},
+                        {name: 'full_status', column: 'Status'}
+                    ],
+                    actions: {
+                        dropdown: [
+                            {key:'view',name:'View'},
+                            {key: 'edit',name: 'Edit'},
+                            {key:'toggle',name: 'Activated'}
+                        ]
+                    }
                 }
             }
         },
-        computed: {
-            ...mapState('property', {
-                data: state => state.data
-            }),
-            ...mapGetters('property', {
-                errors: 'errors'
-            })
-        },
         methods: {
-            onClick(value) {
-                if (value == 'add') {
+            /*Fetch Property*/
+            fetchData() {
+                const parameter = this.$route.params;
+                this.$store.dispatch('property/edit',parameter.id);
+            },
+            /*Grid View Action*/
+            action(action,value,index) {
+                if(action === 'edit') {
+                    this.$store.commit('property/editVilla',{action: action, villa_no: value.villa_no});
                     EventBus.$emit('villaDialog.show');
                 }
             },
-            fetchData() {
-                this.$store.dispatch('property/create');
-            },
-            saveData() {
-                this.$store.dispatch('property/save');
+            /*Call button */
+            onClick() {
+
             }
+        },
+        computed: {
+            ...mapState('property',{
+                data: state => state.data
+            }),
+            ...mapGetters('property',{
+                errors: 'errors'
+            })
         },
         mounted() {
             this.fetchData();
         },
-    };
+        watch: {
+            '$route' : 'fetchData'
+        }
+    }
 </script>

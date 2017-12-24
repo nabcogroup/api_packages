@@ -1,5 +1,5 @@
 import {ErrorValidations} from "my-vue2-package";
-import {cloneObject} from "my-vue2-package";
+import {cloneObject,copiedValue} from "my-vue2-package";
 
 const state = {
     data: {
@@ -31,6 +31,20 @@ const mutations = {
         state.data.villas.push(villa);
         this.commit('property/clearInstance');
     },
+    editVilla(state,payload) {
+        const villa = _.find(state.data.villas,(villa) => {
+            return villa.villa_no === payload.villa_no;
+        });
+        this.commit('property/clearInstance');
+        if(villa) state.villa = cloneObject(villa);
+    },
+    updateVilla(state,payload) {
+
+        let editVilla = _.find(state.data.villas,(villa) => {
+            return villa.id == state.villa.id
+        });
+        copiedValue(state.villa,editVilla);
+    },
     clearInstance(state) {
         state.villa.villa_no = "";
         state.villa.description = "";
@@ -53,12 +67,11 @@ const actions = {
 
                 state.lookups = response.data.lookups;
 
-
             });
     },
     edit({state}, id) {
 
-        axios.get("/api/property/edit/" + id)
+        axios.get("/api/property/" + id + "/edit/")
             .then((response) => {
                 state.data = response.data.data;
                 state.lookups = response.data.lookups;

@@ -16,6 +16,12 @@ const router = new VueRouter(
                 path: '/property/create',
                 component: require('./components/views/properties/Create')
             },
+            {
+                name: 'property.edit',
+                path: '/property/edit/:id',
+                component: require('./components/views/properties/Edit')
+            },
+
         ]
         
     }

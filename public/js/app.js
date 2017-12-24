@@ -81301,6 +81301,10 @@ var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
         name: 'property.create',
         path: '/property/create',
         component: __webpack_require__(198)
+    }, {
+        name: 'property.edit',
+        path: '/property/edit/:id',
+        component: __webpack_require__(225)
     }]
 
 });
@@ -84004,14 +84008,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             gridView: {
                 columns: [{ name: 'name', column: 'Name' }, { name: 'address', column: 'Address' }, { name: 'total_units', column: 'Total Units' }, { name: '$action', column: 'Actions', style: 'width:5%' }],
-                actions: [{ key: 'view', name: 'View' }],
+                actions: [{ key: 'edit', name: 'Edit' }, { key: 'view', name: 'View' }],
                 source: {
                     url: '/api/property',
                     pointer: 'properties'
                 }
             }
         };
+    },
+
+    methods: {
+        action: function action(a, v, k) {
+            if (a === 'edit') {}
+        }
     }
+
 });
 
 /***/ }),
@@ -84028,7 +84039,10 @@ var render = function() {
     [
       _c("v-page-header-bar", { attrs: { title: "Property List" } }),
       _vm._v(" "),
-      _c("v-live-view", { attrs: { grid: _vm.gridView } })
+      _c("v-live-view", {
+        attrs: { grid: _vm.gridView },
+        on: { action: _vm.action }
+      })
     ],
     1
   )
@@ -84104,7 +84118,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_my_vue2_package___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_my_vue2_package__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-//
 //
 //
 //
@@ -84304,7 +84317,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     methods: {
         close: function close() {},
         onSubmit: function onSubmit() {
-            this.$store.commit('property/insertVilla');
+            if (this.villa.id !== undefined && this.villa.id !== 0) {
+                this.$store.commit('property/updateVilla');
+            } else {
+                this.$store.commit('property/insertVilla');
+            }
+
             __WEBPACK_IMPORTED_MODULE_1_my_vue2_package__["EventBus"].$emit('villaDialog.close');
         }
     }
@@ -84640,41 +84658,37 @@ var render = function() {
       _c("div", { staticClass: "col-sm-4" })
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c(
-        "div",
-        { staticClass: "col-md-12" },
-        [
-          _c("v-page-header-bar", {
-            attrs: { title: "Villas" },
-            on: { click: _vm.onClick }
-          }),
-          _vm._v(" "),
-          _c("v-grid-view", {
-            attrs: { grid: _vm.gridView, data: _vm.data.villas }
-          }),
-          _vm._v(" "),
-          _c("villa-dialog")
-        ],
-        1
-      )
-    ]),
+    _c(
+      "div",
+      { staticClass: "col-md-12" },
+      [
+        _c("v-page-header-bar", {
+          attrs: { title: "Villas" },
+          on: { click: _vm.onClick }
+        }),
+        _vm._v(" "),
+        _c("v-grid-view", {
+          attrs: { grid: _vm.gridView, data: _vm.data.villas }
+        }),
+        _vm._v(" "),
+        _c("villa-dialog")
+      ],
+      1
+    ),
     _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-2 col-md-offset-10" }, [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-info btn-block",
-            on: {
-              click: function($event) {
-                _vm.saveData()
-              }
+    _c("div", { staticClass: "col-md-2 col-md-offset-10" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-info btn-block",
+          on: {
+            click: function($event) {
+              _vm.saveData()
             }
-          },
-          [_vm._v("Save")]
-        )
-      ])
+          }
+        },
+        [_vm._v("Save")]
+      )
     ])
   ])
 }
@@ -84754,6 +84768,20 @@ var mutations = {
         state.data.villas.push(villa);
         this.commit('property/clearInstance');
     },
+    editVilla: function editVilla(state, payload) {
+        var villa = _.find(state.data.villas, function (villa) {
+            return villa.villa_no === payload.villa_no;
+        });
+        this.commit('property/clearInstance');
+        if (villa) state.villa = Object(__WEBPACK_IMPORTED_MODULE_0_my_vue2_package__["cloneObject"])(villa);
+    },
+    updateVilla: function updateVilla(state, payload) {
+
+        var editVilla = _.find(state.data.villas, function (villa) {
+            return villa.id == state.villa.id;
+        });
+        Object(__WEBPACK_IMPORTED_MODULE_0_my_vue2_package__["copiedValue"])(state.villa, editVilla);
+    },
     clearInstance: function clearInstance(state) {
         state.villa.villa_no = "";
         state.villa.description = "";
@@ -84781,7 +84809,7 @@ var actions = {
         var state = _ref2.state;
 
 
-        axios.get("/api/property/edit/" + id).then(function (response) {
+        axios.get("/api/property/" + id + "/edit/").then(function (response) {
             state.data = response.data.data;
             state.lookups = response.data.lookups;
         });
@@ -84914,6 +84942,298 @@ var module = {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 211 */,
+/* 212 */,
+/* 213 */,
+/* 214 */,
+/* 215 */,
+/* 216 */,
+/* 217 */,
+/* 218 */,
+/* 219 */,
+/* 220 */,
+/* 221 */,
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(126)
+/* script */
+var __vue_script__ = __webpack_require__(226)
+/* template */
+var __vue_template__ = __webpack_require__(227)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\views\\properties\\Edit.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-824f7f04", Component.options)
+  } else {
+    hotAPI.reload("data-v-824f7f04", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 226 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(133);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_my_vue2_package__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_my_vue2_package___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_my_vue2_package__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__VillaDialog_vue__ = __webpack_require__(200);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__VillaDialog_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__VillaDialog_vue__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    components: {
+        VillaDialog: __WEBPACK_IMPORTED_MODULE_2__VillaDialog_vue___default.a
+    },
+    data: function data() {
+        return {
+            loading: false,
+            gridView: {
+                columns: [{ name: 'villa_no', column: 'Villa No' }, { name: 'description', column: 'Description' }, { name: 'rate_per_month', column: 'Rate/Month', dtype: 'currency' }, { name: 'full_status', column: 'Status' }],
+                actions: {
+                    dropdown: [{ key: 'view', name: 'View' }, { key: 'edit', name: 'Edit' }, { key: 'toggle', name: 'Activated' }]
+                }
+            }
+        };
+    },
+
+    methods: {
+        /*Fetch Property*/
+        fetchData: function fetchData() {
+            var parameter = this.$route.params;
+            this.$store.dispatch('property/edit', parameter.id);
+        },
+
+        /*Grid View Action*/
+        action: function action(_action, value, index) {
+            if (_action === 'edit') {
+                this.$store.commit('property/editVilla', { action: _action, villa_no: value.villa_no });
+                __WEBPACK_IMPORTED_MODULE_1_my_vue2_package__["EventBus"].$emit('villaDialog.show');
+            }
+        },
+
+        /*Call button */
+        onClick: function onClick() {}
+    },
+    computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["c" /* mapState */])('property', {
+        data: function data(state) {
+            return state.data;
+        }
+    }), Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapGetters */])('property', {
+        errors: 'errors'
+    })),
+    mounted: function mounted() {
+        this.fetchData();
+    },
+
+    watch: {
+        '$route': 'fetchData'
+    }
+});
+
+/***/ }),
+/* 227 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("v-panel", { attrs: { header: "Edit Property" } }, [
+    _c("div", { staticClass: "page-header" }, [
+      _c("h4", [_vm._v("Information")])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-8" }, [
+        _c(
+          "div",
+          { staticClass: "form-horizontal" },
+          [
+            _c(
+              "v-control-wrapper",
+              {
+                attrs: {
+                  label: "Property Code ",
+                  propertyObject: { alignRight: true },
+                  required: true
+                }
+              },
+              [
+                _c("v-input-control", {
+                  attrs: { name: "code", "error-val": _vm.errors },
+                  model: {
+                    value: _vm.data.code,
+                    callback: function($$v) {
+                      _vm.$set(_vm.data, "code", $$v)
+                    },
+                    expression: "data.code"
+                  }
+                })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "v-control-wrapper",
+              {
+                attrs: {
+                  label: "Property Name ",
+                  propertyObject: { alignRight: true },
+                  required: true
+                }
+              },
+              [
+                _c("v-input-control", {
+                  attrs: { name: "name", "error-val": _vm.errors },
+                  model: {
+                    value: _vm.data.name,
+                    callback: function($$v) {
+                      _vm.$set(_vm.data, "name", $$v)
+                    },
+                    expression: "data.name"
+                  }
+                })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "v-control-wrapper",
+              {
+                attrs: {
+                  label: "Property Address ",
+                  propertyObject: { alignRight: true },
+                  required: true
+                }
+              },
+              [
+                _c("v-input-control", {
+                  attrs: { vtype: "multiline" },
+                  model: {
+                    value: _vm.data.address,
+                    callback: function($$v) {
+                      _vm.$set(_vm.data, "address", $$v)
+                    },
+                    expression: "data.address"
+                  }
+                })
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-sm-4" }),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-md-12" },
+        [
+          _c("v-page-header-bar", {
+            attrs: { title: "Villas" },
+            on: { click: _vm.onClick }
+          }),
+          _vm._v(" "),
+          _c("v-grid-view", {
+            attrs: { grid: _vm.gridView, data: _vm.data.villas },
+            on: { action: _vm.action }
+          }),
+          _vm._v(" "),
+          _c("villa-dialog")
+        ],
+        1
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-824f7f04", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

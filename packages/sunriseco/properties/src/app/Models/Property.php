@@ -19,10 +19,15 @@ class Property extends BaseModel
 
     protected $appends = ['total_units'];
 
+    protected $hiddens = ["created_at","updated_at","deleted_at"];
+
     /**navigation**/
     public function villas() {
         return $this->hasMany(Villa::class,"property_id","id");
     }
+
+    
+
 
 
     /**mutator accessor**/
